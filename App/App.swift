@@ -10,3 +10,17 @@ struct App: SwiftUI.App {
         .modelContainer(for: Game.self)
     }
 }
+
+/// App Icon
+#Preview {
+    Image(systemName: "document.viewfinder")
+        .resizable()
+        .aspectRatio(contentMode: .fit)
+        .foregroundStyle(.white)
+            .frame(width: 300, height: 300)
+        .padding()
+        .padding()
+        .padding()
+        .padding()
+        .background(Color("Color").gradient)
+}
