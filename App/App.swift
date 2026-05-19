@@ -5,16 +5,7 @@ import SwiftData
 struct App: SwiftUI.App {
     var body: some Scene {
         WindowGroup {
-            Image(systemName: "suit.spade.fill")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .foregroundStyle(.white)
-                    .frame(width: 300, height: 300)
-                .padding()
-                .padding()
-                .padding()
-                .padding()
-                .background(.accent.gradient)
+            GamesList()
         }
         .modelContainer(for: Game.self)
     }
