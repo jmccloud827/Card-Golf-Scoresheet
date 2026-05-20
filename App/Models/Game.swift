@@ -27,16 +27,13 @@ import SwiftData
         }
     }
     
-    init(name: String, players: [Player]) {
+    init(name: String, players: [String]) {
         self.name = name
-        self.persistedPlayers = players
+        self.persistedPlayers = players.map { .init(name: $0) }
         self.persistedHands = []
         for index in 1 ... 18 {
-            let hand = Hand(number: index, players: players)
+            let hand = Hand(number: index, players: self.players)
             self.persistedHands.append(hand)
-            for player in players {
-                player.hands.append(hand.scores.first { $0.playerID == player.id }!)
-            }
         }
     }
 }

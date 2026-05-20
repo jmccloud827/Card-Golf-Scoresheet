@@ -4,7 +4,13 @@ import SwiftData
 @Model final class Player {
     var id = UUID()
     var name: String
-    var hands: [Hand.Score] = []
+    var game: Game?
+    
+    @Transient var hands: [Hand.Score] {
+        game!.hands
+            .flatMap { $0.scores }
+            .filter { $0.playerID == id }
+    }
     
     init(name: String) {
         self.name = name

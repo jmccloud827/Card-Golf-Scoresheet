@@ -200,14 +200,15 @@ private struct ResultsRow: View {
 extension Game {
     static let example = Game(name: "New Game",
                               players: [
-                                  .init(name: "Player 1"),
-                                  .init(name: "Player 2"),
-                                  .init(name: "Player 3"),
-                                  .init(name: "Player 4"),
-                                  .init(name: "Player 5"),
-                                  .init(name: "Player 6"),
-                                  .init(name: "Player 7"),
-                                  .init(name: "Player 8"),
-                                  .init(name: "Player 9")
+                                  "Player 1",
+                                  "Player 2",
+                                  "Player 3",
+                                  "Player 4",
+                                  "Player 4",
+                                  "Player 5",
+                                  "Player 6",
+                                  "Player 7",
+                                  "Player 8",
+                                  "Player 9"
                               ])
 }

@@ -6,7 +6,7 @@ struct NewGameEditor: View {
     @Environment(\.dismiss) private var dismiss
     
     @State private var name = Date.now.formatted()
-    @State private var players: [Player] = []
+    @State private var players: [String] = []
 
     var body: some View {
         NavigationView {
@@ -14,14 +14,14 @@ struct NewGameEditor: View {
                 TextField("Name", text: $name)
                 
                 Section {
-                    ForEach($players, id: \.id) { $player in
-                        TextField("Name", text: $player.name)
+                    ForEach($players.enumerated(), id: \.offset) { index, $player in
+                        TextField("Name", text: $player)
                     }
                     .onDelete(perform: deletePlayers)
                     
                     Button {
                         withAnimation {
-                            players.append(.init(name: "Player \(players.count + 1)"))
+                            players.append("Player \(players.count + 1)")
                         }
                     } label: {
                         Label("Add Player", systemImage: "plus")
