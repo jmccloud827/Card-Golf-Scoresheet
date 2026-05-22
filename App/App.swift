@@ -7,7 +7,27 @@ struct App: SwiftUI.App {
         WindowGroup {
             GamesList()
         }
-        .modelContainer(for: Game.self)
+        .modelContainer(for: [Game.self, Player.self])
+    }
+}
+
+extension ModelContainer {
+    static var previewContainer: ModelContainer {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let container = try! ModelContainer(for: Game.self, Player.self,
+                                            configurations: config)
+        
+        for player in Player.examples {
+            container.mainContext.insert(player)
+        }
+        
+        for game in Game.examples {
+            container.mainContext.insert(game)
+        }
+    
+        try? container.mainContext.save()
+    
+        return container
     }
 }
 

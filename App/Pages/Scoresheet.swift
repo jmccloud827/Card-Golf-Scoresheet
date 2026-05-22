@@ -16,7 +16,10 @@ struct Scoresheet: View {
                     
                 Divider()
                     
-                ResultsRow(label: "Final", scores: game.players.map(\.total), backgroundColor: .red, scorePosition: scorePosition)
+                ResultsRow(label: "Final",
+                           scores: game.players.map { game.getTotal(for: $0) },
+                           backgroundColor: .red,
+                           scorePosition: scorePosition)
                     
                 Divider()
             }
@@ -35,6 +38,18 @@ struct Scoresheet: View {
                     scorePosition = scorePosition?.advanced(by: 1)
                 } label: {
                     Label("Next", systemImage: "chevron.right")
+                }
+            }
+            
+            ToolbarItem {
+                if game.finished == nil {
+                    Button {
+                        game.markAsFinished()
+                    } label: {
+                        Label("Mark as finished", systemImage: "checkmark")
+                    }
+                    .buttonStyle(.glassProminent)
+                    .tint(.green)
                 }
             }
         }
@@ -57,7 +72,8 @@ struct Scoresheet: View {
                 HStack(spacing: 0) {
                     Spacer(minLength: 0)
                     
-                    Text(player.name)
+                    PlayerLabel(player: player, size: 50)
+                        .vertical()
                         .padding(.horizontal, 5)
                         .padding(.vertical, 5)
                         
@@ -84,7 +100,10 @@ struct Scoresheet: View {
             if $hand.wrappedValue.number.isMultiple(of: 9) {
                 Divider()
                 
-                ResultsRow(label: $hand.wrappedValue.number.isMultiple(of: 18) ? "Back" : "Front", scores: $hand.wrappedValue.number.isMultiple(of: 18) ? game.players.map(\.back9Total) : game.players.map(\.front9Total), backgroundColor: .green, scorePosition: scorePosition)
+                ResultsRow(label: $hand.wrappedValue.number.isMultiple(of: 18) ? "Back" : "Front",
+                           scores: game.players.map { $hand.wrappedValue.number.isMultiple(of: 18) ? game.getBack9(for: $0) : game.getFront9(for: $0) },
+                           backgroundColor: .green,
+                           scorePosition: scorePosition)
             }
         }
     }
@@ -93,7 +112,7 @@ struct Scoresheet: View {
 private struct HandRow: View {
     @Environment(Game.self) private var game
     
-    @Binding var hand: Hand
+    @Binding var hand: Game.Hand
     var scorePosition: FocusState<Int?>.Binding
     
     var body: some View {
@@ -198,17 +217,5 @@ private struct ResultsRow: View {
 }
 
 extension Game {
-    static let example = Game(name: "New Game",
-                              players: [
-                                  "Player 1",
-                                  "Player 2",
-                                  "Player 3",
-                                  "Player 4",
-                                  "Player 4",
-                                  "Player 5",
-                                  "Player 6",
-                                  "Player 7",
-                                  "Player 8",
-                                  "Player 9"
-                              ])
+    static let example = Game(name: "New Game", players: Card_Golf_Scoresheet.Player.examples)
 }
