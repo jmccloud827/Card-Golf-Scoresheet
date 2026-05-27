@@ -4,13 +4,18 @@ import SwiftData
 @Model final class Game {
     var name: String
     var persistedPlayers: [Player]
+    var playerOrder: [PlayerOrder]
     var persistedHands: [Hand]
     var created = Date.now
-    var finished : Date?
+    var finished: Date?
     
     @Transient var players: [Player] {
         get {
-            persistedPlayers.sorted { $0.name < $1.name }
+            playerOrder
+                .sorted(by: { $0.order < $1.order })
+                .map { order in
+                    persistedPlayers.first { $0.id == order.playerID }!
+                }
         }
         
         set {
@@ -28,9 +33,10 @@ import SwiftData
         }
     }
     
-    init(name: String, players: [Card_Golf_Scoresheet.Player]) {
+    init(name: String, players: [Player]) {
         self.name = name
         self.persistedPlayers = players
+        self.playerOrder = players.enumerated().map { .init(order: $0, playerID: $1.id) }
         self.persistedHands = []
         for index in 1 ... 18 {
             let hand = Hand(number: index, players: self.players)
@@ -47,7 +53,7 @@ import SwiftData
     }
     
     func getHands(for player: Player) -> [Hand.Score] {
-        hands.flatMap { $0.scores }.filter {$0.playerID == player.id }
+        hands.flatMap { $0.scores }.filter { $0.playerID == player.id }
     }
     
     func getTotal(for player: Player) -> Int {
@@ -96,6 +102,16 @@ import SwiftData
             }
         }
     }
+    
+    @Model final class PlayerOrder {
+        var order: Int
+        var playerID: UUID
+        
+        init(order: Int, playerID: UUID) {
+            self.order = order
+            self.playerID = playerID
+        }
+    }
 }
 
 extension Game {
@@ -112,9 +128,9 @@ extension Game {
     static let examples: [Game] = [.example1, .example2, .example3, .example4, .example5, .example6, .example7, .example8, .example9]
     
     fileprivate func randomResult() -> Game {
-        self.hands.forEach { hand in
-            hand.scores.forEach { score in
-                score.value = Int.random(in: 0...20)
+        for hand in self.hands {
+            for score in hand.scores {
+                score.value = Int.random(in: 0 ... 20)
             }
         }
         

@@ -32,20 +32,6 @@ struct PlayerDetails: View {
                 }
             }
         }
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button(role: .cancel) {
-                    dismiss()
-                }
-            }
-                
-            ToolbarItem {
-                Button(role: .confirm) {
-                    dismiss()
-                }
-            }
-        }
-        .navigationBarBackButtonHidden()
         .navigationTitle(player.name)
         .navigationBarTitleDisplayMode(.inline)
     }

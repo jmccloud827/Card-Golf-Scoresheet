@@ -3,6 +3,7 @@ import SwiftUI
 struct Scoresheet: View {
     @Bindable var game: Game
     
+    @State private var showConfirmFinishDialog = false
     @FocusState private var scorePosition: Int?
 
     var body: some View {
@@ -27,29 +28,58 @@ struct Scoresheet: View {
         }
         .defaultScrollAnchor(.topLeading)
         .toolbar {
-            ToolbarItem(placement: .keyboard) {
-                Button {} label: {
+            ToolbarItemGroup(placement: .keyboard) {
+                Button {
+                    scorePosition = scorePosition?.advanced(by: -1)
+                } label: {
                     Label("Previous", systemImage: "chevron.left")
                 }
-            }
-            
-            ToolbarItem(placement: .keyboard) {
+                    
                 Button {
                     scorePosition = scorePosition?.advanced(by: 1)
                 } label: {
                     Label("Next", systemImage: "chevron.right")
+                }
+                
+                Spacer()
+            }
+             
+            ToolbarItemGroup(placement: .keyboard) {
+                Button {
+                    if let scorePosition {
+                        let hand = game.hands[(scorePosition / game.players.count) - 1]
+                        let player = hand.scores[scorePosition % game.players.count]
+                        if player.value != nil {
+                            player.value = (player.value ?? 0) * -1
+                        }
+                    }
+                } label: {
+                    Label("Negative", systemImage: "minus")
+                }
+                
+                Spacer()
+                
+                Button {
+                    scorePosition = nil
+                } label: {
+                    Label("Dismiss Keyboard", systemImage: "keyboard.chevron.compact.down")
                 }
             }
             
             ToolbarItem {
                 if game.finished == nil {
                     Button {
-                        game.markAsFinished()
+                        showConfirmFinishDialog = true
                     } label: {
                         Label("Mark as finished", systemImage: "checkmark")
                     }
                     .buttonStyle(.glassProminent)
                     .tint(.green)
+                    .confirmationDialog("Are you sure you want to finish this game?", isPresented: $showConfirmFinishDialog, titleVisibility: .visible) {
+                        Button("Yes, I'm done", role: .destructive) {
+                            game.markAsFinished()
+                        }
+                    }
                 }
             }
         }
