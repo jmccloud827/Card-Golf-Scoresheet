@@ -39,7 +39,7 @@ import SwiftData
         self.playerOrder = players.enumerated().map { .init(order: $0, playerID: $1.id) }
         self.persistedHands = []
         for index in 1 ... 18 {
-            let hand = Hand(number: index, players: self.players)
+            let hand = Hand(number: index, players: self.players, belongsTo: self)
             self.persistedHands.append(hand)
         }
         
@@ -76,9 +76,16 @@ import SwiftData
         var number: Int
         private var persistedScores: [Score]
         
+        // Inverse
+        var belongsTo: Game
+        
         var scores: [Score] {
             get {
-                persistedScores.sorted { $0.playerName < $1.playerName }
+                belongsTo.playerOrder
+                    .sorted(by: { $0.order < $1.order })
+                    .map { order in
+                        persistedScores.first { $0.playerID == order.playerID }!
+                    }
             }
             
             set {
@@ -86,9 +93,10 @@ import SwiftData
             }
         }
         
-        init(number: Int, players: [Player]) {
+        init(number: Int, players: [Player], belongsTo: Game) {
             self.number = number
             self.persistedScores = players.map { .init(player: $0) }
+            self.belongsTo = belongsTo
         }
         
         @Model final class Score {

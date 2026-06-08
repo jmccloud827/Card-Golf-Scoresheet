@@ -55,7 +55,7 @@ struct NewGameEditor: View {
                 
                 ToolbarItem {
                     Button(role: .confirm) {
-                        modelContext.insert(Game(name: name, players: players))
+                        modelContext.insert(Game(name: name, players: selectedPlayers))
                         
                         dismiss()
                     }
