@@ -49,7 +49,7 @@ import SwiftData
     }
     
     var winner: Player {
-        players.sorted { getTotal(for: $0) > getTotal(for: $1) }.first!
+        players.sorted { getTotal(for: $0) < getTotal(for: $1) }.first!
     }
     
     func getHands(for player: Player) -> [Hand.Score] {
