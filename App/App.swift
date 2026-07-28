@@ -5,24 +5,46 @@ import SwiftData
 struct App: SwiftUI.App {
     var body: some Scene {
         WindowGroup {
-            GamesList()
+            CardsList()
         }
-        .modelContainer(for: [Game.self, Player.self])
+        .modelContainer(.appContainer)
     }
 }
 
 extension ModelContainer {
+    static var appContainer: ModelContainer {
+        let container = try! ModelContainer(for: Card.self, Player.self)
+
+        #if DEBUG
+        let context = container.mainContext
+        let existingCardCount = (try? context.fetchCount(FetchDescriptor<Card>())) ?? 0
+        if existingCardCount == 0 {
+            for player in Player.examples {
+                context.insert(player)
+            }
+
+            for card in Card.examples {
+                context.insert(card)
+            }
+
+            try? context.save()
+        }
+        #endif
+
+        return container
+    }
+
     static var previewContainer: ModelContainer {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        let container = try! ModelContainer(for: Game.self, Player.self,
+        let container = try! ModelContainer(for: Card.self, Player.self,
                                             configurations: config)
         
         for player in Player.examples {
             container.mainContext.insert(player)
         }
         
-        for game in Game.examples {
-            container.mainContext.insert(game)
+        for card in Card.examples {
+            container.mainContext.insert(card)
         }
     
         try? container.mainContext.save()

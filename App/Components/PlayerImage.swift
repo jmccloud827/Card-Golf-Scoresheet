@@ -12,9 +12,16 @@ struct PlayerImage: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
             } else {
-                Image(systemName: "person.circle.fill")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
+                GeometryReader { geometry in
+                    ZStack {
+                        Circle()
+                            .fill(player.avatarColor.gradient)
+
+                        Text(player.avatarEmoji)
+                            .font(.system(size: geometry.size.width * 0.55))
+                            .minimumScaleFactor(0.5)
+                    }
+                }
             }
         }
         .clipShape(Circle())

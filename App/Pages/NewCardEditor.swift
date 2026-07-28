@@ -1,11 +1,11 @@
 import SwiftUI
 import SwiftData
 
-struct NewGameEditor: View {
+struct NewCardEditor: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \Player.created, order: .reverse) private var players: [Player]
-    @Query(sort: \Game.created, order: .reverse) private var games: [Game]
+    @Query(sort: \Card.created, order: .reverse) private var cards: [Card]
     
     @State private var name = ""
     @State private var selectedPlayers: [Player] = []
@@ -16,18 +16,20 @@ struct NewGameEditor: View {
                 TextField("Name", text: $name)
                 
                 Section {
-                    ForEach(selectedPlayers.enumerated(), id: \.offset) { index, player in
-                        SelectablePlayerLabel(player: player, selectedPlayers: $selectedPlayers)
-                    }
-                    
                     Button {
-                        withAnimation {
-                            let player = Player(name: "Player \(players.count + 1)")
-                            modelContext.insert(player)
-                            selectedPlayers.append(player)
-                        }
+                        let player = Player(name: "Player \(players.count + 1)")
+                        modelContext.insert(player)
+                        selectedPlayers.append(player)
                     } label: {
                         Label("Add New Player", systemImage: "plus")
+                    }
+
+                    ForEach(selectedPlayers, id: \.id) { player in
+                        SelectablePlayerLabel(player: player, selectedPlayers: $selectedPlayers)
+                            .id("selected-\(player.id)")
+                    }
+                    .onMove { source, destination in
+                        selectedPlayers.move(fromOffsets: source, toOffset: destination)
                     }
                 } header: {
                     Text("Players (\(selectedPlayers.count))")
@@ -36,36 +38,43 @@ struct NewGameEditor: View {
                 .alignmentGuide(.listRowSeparatorLeading) { viewDimensions in
                   0
                 }
-                
+
                 Section("Recent Players") {
-                    ForEach(players.filter { !selectedPlayers.contains($0) }.enumerated(), id: \.offset) { index, player in
+                    ForEach(players.filter { !selectedPlayers.contains($0) }, id: \.id) { player in
                         SelectablePlayerLabel(player: player, selectedPlayers: $selectedPlayers)
+                            .id("recent-\(player.id)")
                     }
                 }
                 .alignmentGuide(.listRowSeparatorLeading) { viewDimensions in
                   0
                 }
             }
+            .scrollDismissesKeyboard(.interactively)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(role: .cancel) {
                         dismiss()
                     }
                 }
-                
+
                 ToolbarItem {
-                    Button(role: .confirm) {
-                        modelContext.insert(Game(name: name, players: selectedPlayers))
-                        
+                    EditButton()
+                        .disabled(selectedPlayers.count < 2)
+                }
+
+                ToolbarItem {
+                    Button("Create", role: .confirm) {
+                        modelContext.insert(Card(name: name, players: selectedPlayers))
+
                         dismiss()
                     }
                     .disabled(selectedPlayers.count < 2)
                 }
             }
-            .navigationTitle("Create a New Game")
+            .navigationTitle("Create a New Card")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
-                name = "Game \(games.count + 1)"
+                name = "Card \(cards.count + 1)"
             }
         }
     }
@@ -96,11 +105,12 @@ struct SelectablePlayerLabel: View {
                     .foregroundStyle(selectedPlayers.contains(player) ? .red : .green)
                     .contentTransition(.symbolEffect(.replace))
             }
+            .buttonStyle(.plain)
         }
     }
 }
 
 #Preview {
-    NewGameEditor()
+    NewCardEditor()
         .modelContainer(.previewContainer)
 }

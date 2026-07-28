@@ -3,11 +3,12 @@ import SwiftUI
 
 struct PlayerLabelEditor: View {
     @Bindable var player: Player
-    
+
     @State private var photo: PhotosPickerItem?
     @State private var showCamera = false
+    @State private var showPhotosPicker = false
     @State private var showDialog = false
-    
+
     var body: some View {
         HStack {
             Button {
@@ -17,39 +18,34 @@ struct PlayerLabelEditor: View {
                     .frame(width: 75, height: 75)
                     .foregroundStyle(.foreground)
             }
-                
+            .buttonStyle(.plain)
+
             TextField("Name", text: $player.name)
-             
-            label
+        }
+        .confirmationDialog("Change Photo", isPresented: $showDialog, titleVisibility: .visible) {
+            Button("Take Photo") {
+                showCamera = true
+            }
+
+            Button("Choose from Library") {
+                showPhotosPicker = true
+            }
+        }
+        .photosPicker(isPresented: $showPhotosPicker, selection: $photo, matching: .images)
+        .onChange(of: photo) {
+            Task {
+                if let loaded = try? await photo?.loadTransferable(type: Data.self) {
+                    withAnimation {
+                        player.picture = loaded
+                    }
+                }
+            }
         }
         .fullScreenCover(isPresented: $showCamera) {
             cameraView
         }
     }
-    
-    private var label: some View {
-        HStack {
-            VStack {
-                Button("Camera") {
-                    showCamera = true
-                }
-                .buttonStyle(.borderedProminent)
-                
-                PhotosPicker("Library", selection: $photo, matching: .images)
-                    .buttonStyle(.borderedProminent)
-                    .onChange(of: photo) {
-                        Task {
-                            if let loaded = try? await photo?.loadTransferable(type: Data.self) {
-                                withAnimation {
-                                    player.picture = loaded
-                                }
-                            }
-                        }
-                    }
-            }
-        }
-    }
-    
+
     @ViewBuilder private var image: some View {
         PlayerImage(player: player)
     }

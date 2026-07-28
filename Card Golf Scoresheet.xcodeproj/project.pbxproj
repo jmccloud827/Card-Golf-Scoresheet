@@ -8,33 +8,33 @@
 
 /* Begin PBXBuildFile section */
 		3022A3FE2FBCA423005EA2EB /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A3FD2FBCA423005EA2EB /* App.swift */; };
-		3022A4002FBCA423005EA2EB /* GamesList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A3FF2FBCA423005EA2EB /* GamesList.swift */; };
-		3022A4022FBCA423005EA2EB /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A4012FBCA423005EA2EB /* Game.swift */; };
+		3022A4002FBCA423005EA2EB /* CardsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A3FF2FBCA423005EA2EB /* CardsList.swift */; };
+		3022A4022FBCA423005EA2EB /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A4012FBCA423005EA2EB /* Card.swift */; };
 		3022A4042FBCA423005EA2EB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3022A4032FBCA423005EA2EB /* Assets.xcassets */; };
 		3022A40F2FBCB42F005EA2EB /* Player.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A40E2FBCB42F005EA2EB /* Player.swift */; };
-		3022A4112FBCB4E2005EA2EB /* NewGameEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A4102FBCB4E2005EA2EB /* NewGameEditor.swift */; };
+		3022A4112FBCB4E2005EA2EB /* NewCardEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A4102FBCB4E2005EA2EB /* NewCardEditor.swift */; };
 		3022A4132FBCB984005EA2EB /* Scoresheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A4122FBCB984005EA2EB /* Scoresheet.swift */; };
 		3022A4172FBF48F3005EA2EB /* PlayerDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A4162FBF48F3005EA2EB /* PlayerDetails.swift */; };
 		3022A41A2FBF49EC005EA2EB /* PlayerLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A4192FBF49EC005EA2EB /* PlayerLabel.swift */; };
 		3022A41C2FC09F99005EA2EB /* PlayerLabelEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A41B2FC09F99005EA2EB /* PlayerLabelEditor.swift */; };
 		3022A41E2FC0C22B005EA2EB /* PlayerImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A41D2FC0C22B005EA2EB /* PlayerImage.swift */; };
-		3022A4202FC0CC62005EA2EB /* GameLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A41F2FC0CC62005EA2EB /* GameLabel.swift */; };
+		3022A4202FC0CC62005EA2EB /* CardLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3022A41F2FC0CC62005EA2EB /* CardLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		3022A3FA2FBCA422005EA2EB /* Card Golf Scoresheet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Card Golf Scoresheet.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3022A3FD2FBCA423005EA2EB /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
-		3022A3FF2FBCA423005EA2EB /* GamesList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamesList.swift; sourceTree = "<group>"; };
-		3022A4012FBCA423005EA2EB /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		3022A3FF2FBCA423005EA2EB /* CardsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsList.swift; sourceTree = "<group>"; };
+		3022A4012FBCA423005EA2EB /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		3022A4032FBCA423005EA2EB /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3022A40E2FBCB42F005EA2EB /* Player.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Player.swift; sourceTree = "<group>"; };
-		3022A4102FBCB4E2005EA2EB /* NewGameEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewGameEditor.swift; sourceTree = "<group>"; };
+		3022A4102FBCB4E2005EA2EB /* NewCardEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCardEditor.swift; sourceTree = "<group>"; };
 		3022A4122FBCB984005EA2EB /* Scoresheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scoresheet.swift; sourceTree = "<group>"; };
 		3022A4162FBF48F3005EA2EB /* PlayerDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerDetails.swift; sourceTree = "<group>"; };
 		3022A4192FBF49EC005EA2EB /* PlayerLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerLabel.swift; sourceTree = "<group>"; };
 		3022A41B2FC09F99005EA2EB /* PlayerLabelEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerLabelEditor.swift; sourceTree = "<group>"; };
 		3022A41D2FC0C22B005EA2EB /* PlayerImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerImage.swift; sourceTree = "<group>"; };
-		3022A41F2FC0CC62005EA2EB /* GameLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameLabel.swift; sourceTree = "<group>"; };
+		3022A41F2FC0CC62005EA2EB /* CardLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,7 +79,7 @@
 		3022A40B2FBCA42B005EA2EB /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				3022A4012FBCA423005EA2EB /* Game.swift */,
+				3022A4012FBCA423005EA2EB /* Card.swift */,
 				3022A40E2FBCB42F005EA2EB /* Player.swift */,
 			);
 			path = Models;
@@ -96,8 +96,8 @@
 		3022A40D2FBCAAEF005EA2EB /* Pages */ = {
 			isa = PBXGroup;
 			children = (
-				3022A3FF2FBCA423005EA2EB /* GamesList.swift */,
-				3022A4102FBCB4E2005EA2EB /* NewGameEditor.swift */,
+				3022A3FF2FBCA423005EA2EB /* CardsList.swift */,
+				3022A4102FBCB4E2005EA2EB /* NewCardEditor.swift */,
 				3022A4162FBF48F3005EA2EB /* PlayerDetails.swift */,
 				3022A4122FBCB984005EA2EB /* Scoresheet.swift */,
 			);
@@ -107,7 +107,7 @@
 		3022A4182FBF49D5005EA2EB /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				3022A41F2FC0CC62005EA2EB /* GameLabel.swift */,
+				3022A41F2FC0CC62005EA2EB /* CardLabel.swift */,
 				3022A4192FBF49EC005EA2EB /* PlayerLabel.swift */,
 				3022A41D2FC0C22B005EA2EB /* PlayerImage.swift */,
 				3022A41B2FC09F99005EA2EB /* PlayerLabelEditor.swift */,
@@ -187,14 +187,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3022A4112FBCB4E2005EA2EB /* NewGameEditor.swift in Sources */,
+				3022A4112FBCB4E2005EA2EB /* NewCardEditor.swift in Sources */,
 				3022A41E2FC0C22B005EA2EB /* PlayerImage.swift in Sources */,
 				3022A41A2FBF49EC005EA2EB /* PlayerLabel.swift in Sources */,
 				3022A4132FBCB984005EA2EB /* Scoresheet.swift in Sources */,
 				3022A41C2FC09F99005EA2EB /* PlayerLabelEditor.swift in Sources */,
-				3022A4002FBCA423005EA2EB /* GamesList.swift in Sources */,
-				3022A4022FBCA423005EA2EB /* Game.swift in Sources */,
-				3022A4202FC0CC62005EA2EB /* GameLabel.swift in Sources */,
+				3022A4002FBCA423005EA2EB /* CardsList.swift in Sources */,
+				3022A4022FBCA423005EA2EB /* Card.swift in Sources */,
+				3022A4202FC0CC62005EA2EB /* CardLabel.swift in Sources */,
 				3022A3FE2FBCA423005EA2EB /* App.swift in Sources */,
 				3022A4172FBF48F3005EA2EB /* PlayerDetails.swift in Sources */,
 				3022A40F2FBCB42F005EA2EB /* Player.swift in Sources */,

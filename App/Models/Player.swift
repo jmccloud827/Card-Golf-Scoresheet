@@ -1,33 +1,100 @@
 import Foundation
 import SwiftData
+import SwiftUI
 
 @Model final class Player {
     var id = UUID()
     var name: String
     var picture: Data?
     var created = Date.now
-    @Relationship(inverse: \Game.persistedPlayers) var games: [Game] = []
-    
+    var avatarColorIndex = 0
+    var avatarEmoji = "🙂"
+    @Relationship(inverse: \Card.persistedPlayers) var cards: [Card] = []
+
     init(name: String) {
         self.name = name
+        self.avatarColorIndex = AvatarColor.allCases.randomElement()?.rawValue ?? 0
+        self.avatarEmoji = Player.emojiOptions.randomElement() ?? "🙂"
     }
-    
-    var completedGames: [Game] {
-        games.filter { $0.finished != nil }
+
+    var avatarColor: Color {
+        AvatarColor(rawValue: avatarColorIndex)?.color ?? .gray
     }
-    
+
+    enum AvatarColor: Int, CaseIterable {
+        case red, orange, green, mint, teal, cyan, blue, indigo, purple, pink
+
+        var color: Color {
+            switch self {
+            case .red: .red
+            case .orange: .orange
+            case .green: .green
+            case .mint: .mint
+            case .teal: .teal
+            case .cyan: .cyan
+            case .blue: .blue
+            case .indigo: .indigo
+            case .purple: .purple
+            case .pink: .pink
+            }
+        }
+    }
+
+    static let emojiOptions = [
+        "🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐨", "🐯",
+        "🦁", "🐮", "🐷", "🐸", "🐵", "🐔", "🐧", "🐦", "🦆", "🦉",
+        "🐺", "🐗", "🐴", "🦄", "🐝", "🐢", "🐍", "🦎", "🐙", "🦑",
+        "🐠", "🐬", "🐳", "🦈", "🐊", "🦓", "🦒", "🐘", "🦔", "🐿️",
+    ]
+
+    var completedCards: [Card] {
+        cards.filter { $0.finished != nil }
+    }
+
     var averageScore: Double {
-        let totalOfAllGames = completedGames.map { $0.getTotal(for: self) }.reduce(0, +)
-        
-        return Double(totalOfAllGames) / Double(completedGames.count)
+        let totalOfAllCards = completedCards.map { $0.getTotal(for: self) }.reduce(0, +)
+
+        return Double(totalOfAllCards) / Double(completedCards.count)
     }
-    
+
     var bestScore: Int {
-        completedGames.map { $0.getTotal(for: self) }.sorted(by: <).first!
+        completedCards.map { $0.getTotal(for: self) }.sorted(by: <).first!
     }
-    
+
     var worstScore: Int {
-        completedGames.map { $0.getTotal(for: self) }.sorted(by: >).first!
+        completedCards.map { $0.getTotal(for: self) }.sorted(by: >).first!
+    }
+
+    var cardsPlayed: Int {
+        completedCards.count
+    }
+
+    var wins: Int {
+        completedCards.filter { $0.winner.id == id }.count
+    }
+
+    var winRate: Double {
+        guard cardsPlayed > 0 else { return 0 }
+        return Double(wins) / Double(cardsPlayed)
+    }
+
+    var bestHole: Int? {
+        completedCards
+            .flatMap { $0.getHands(for: self) }
+            .compactMap(\.value)
+            .min()
+    }
+
+    struct ScorePoint: Identifiable {
+        var id: Date { date }
+        let date: Date
+        let score: Int
+    }
+
+    var scoreHistory: [ScorePoint] {
+        completedCards
+            .sorted { $0.created < $1.created }
+            .map { ScorePoint(date: $0.created, score: $0.getTotal(for: self)) }
     }
 }
 
