@@ -371,7 +371,7 @@ private struct HandRow: View {
                 HStack(spacing: 0) {
                     Spacer(minLength: 0)
 
-                    TextField("0", value: $score.value, formatter: NumberFormatter())
+                    TextField("0", value: $score.value, format: .number)
                         .focused(scorePosition, equals: $hand.wrappedValue.number * card.players.count + index)
                         .multilineTextAlignment(.trailing)
                         .keyboardType(.numberPad)
