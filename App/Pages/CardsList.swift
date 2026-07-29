@@ -102,7 +102,9 @@ struct CardsList: View {
             }
             .navigationTitle("Card Golf")
         } detail: {
-            Text("Select a card")
+            ContentUnavailableView("No Card Selected",
+                                   systemImage: "suit.spade",
+                                   description: Text("Choose a card from the list to view its scoresheet."))
         }
     }
 

@@ -71,7 +71,7 @@ struct NewCardEditor: View {
                     .disabled(selectedPlayers.count < 2)
                 }
             }
-            .navigationTitle("Create a New Card")
+            .navigationTitle("New Card")
             .navigationBarTitleDisplayMode(.inline)
             .onAppear {
                 name = "Card \(cards.count + 1)"

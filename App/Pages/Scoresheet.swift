@@ -8,6 +8,19 @@ private struct TopBarHeightPreferenceKey: PreferenceKey {
     }
 }
 
+private extension View {
+    /// Rounded, elevated card chrome shared by the grid and by-hole score surfaces.
+    func scoreCardStyle(borderOpacity: Double = 0.2, shadowOpacity: Double = 0.08, shadowRadius: CGFloat = 10, shadowY: CGFloat = 4) -> some View {
+        background(Color(.systemBackground))
+            .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .strokeBorder(Color.secondary.opacity(borderOpacity), lineWidth: 1)
+            }
+            .shadow(color: .black.opacity(shadowOpacity), radius: shadowRadius, y: shadowY)
+    }
+}
+
 struct Scoresheet: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -48,6 +61,7 @@ struct Scoresheet: View {
 
             topBar
         }
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
         .onPreferenceChange(TopBarHeightPreferenceKey.self) { topBarHeight = $0 }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -214,29 +228,32 @@ struct Scoresheet: View {
     }
 
     private var gridScoreView: some View {
-        ScrollView([.vertical, .horizontal]) {
-            Grid(horizontalSpacing: 0, verticalSpacing: 0) {
-                GridRule(emphasized: true)
+        GeometryReader { proxy in
+            ScrollView([.vertical, .horizontal]) {
+                Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                    playersHeader
 
-                playersHeader
+                    scores
 
-                scores
+                    GridRule(emphasized: true)
 
-                GridRule(emphasized: true)
-
-                ResultsRow(label: "Final",
-                           scores: card.players.map { card.getTotal(for: $0) },
-                           tint: .accentColor,
-                           emphasized: true,
-                           scorePosition: scorePosition)
-
-                GridRule(emphasized: true)
+                    ResultsRow(label: "Final",
+                               scores: card.players.map { card.getTotal(for: $0) },
+                               tint: .accentColor,
+                               emphasized: true,
+                               scorePosition: scorePosition)
+                }
+                // Every cell's HStack ends in a Spacer(minLength: 0), which makes Grid itself
+                // report as flexible. Without fixedSize it would stretch to fill minWidth below
+                // instead of staying at its natural size and letting frame(minWidth:) center it.
+                .fixedSize(horizontal: true, vertical: false)
+                .scoreCardStyle()
+                .frame(minWidth: proxy.size.width)
+                .padding()
             }
-            .overlay(Rectangle().stroke(Color.gray.opacity(0.7), lineWidth: 2))
-            .padding()
+            .defaultScrollAnchor(.topLeading)
+            .safeAreaPadding(.top, topBarHeight)
         }
-        .defaultScrollAnchor(.topLeading)
-        .safeAreaPadding(.top, topBarHeight)
     }
 
     private var playersHeader: some View {
@@ -248,7 +265,7 @@ struct Scoresheet: View {
 
                 GridColumnRule()
             }
-            .background(Color.gray.opacity(0.05))
+            .background(Color.secondary.opacity(0.05))
 
             ForEach(card.players.enumerated(), id: \.element.id) { index, player in
                 HStack(spacing: 0) {
@@ -262,12 +279,12 @@ struct Scoresheet: View {
                     GridColumnRule()
                 }
                 .background {
-                    Color.gray.opacity(0.05)
+                    Color.secondary.opacity(0.05)
 
                     if let scorePosition {
                         let mod = scorePosition % card.players.count
                         if mod == index {
-                            Color.gray.opacity(0.25)
+                            Color.secondary.opacity(0.25)
                         }
                     }
                 }
@@ -286,7 +303,7 @@ struct Scoresheet: View {
 
                 ResultsRow(label: $hand.wrappedValue.number.isMultiple(of: 18) ? "Back" : "Front",
                            scores: card.players.map { $hand.wrappedValue.number.isMultiple(of: 18) ? card.getBack9(for: $0) : card.getFront9(for: $0) },
-                           tint: .gray,
+                           tint: .secondary,
                            emphasized: false,
                            scorePosition: scorePosition)
             }
@@ -299,8 +316,8 @@ private struct GridRule: View {
 
     var body: some View {
         Rectangle()
-            .fill(Color.gray.opacity(emphasized ? 0.7 : 0.25))
-            .frame(height: emphasized ? 2 : 1)
+            .fill(Color.secondary.opacity(emphasized ? 0.35 : 0.15))
+            .frame(height: emphasized ? 1.5 : 1)
     }
 }
 
@@ -309,8 +326,8 @@ private struct GridColumnRule: View {
 
     var body: some View {
         Rectangle()
-            .fill(Color.gray.opacity(emphasized ? 0.7 : 0.25))
-            .frame(width: emphasized ? 2 : 1)
+            .fill(Color.secondary.opacity(emphasized ? 0.35 : 0.15))
+            .frame(width: emphasized ? 1.5 : 1)
     }
 }
 
@@ -339,13 +356,13 @@ private struct HandRow: View {
             }
             .background {
                 if isAlternateRow {
-                    Color.gray.opacity(0.035)
+                    Color.secondary.opacity(0.035)
                 }
 
                 if let scorePosition = scorePosition.wrappedValue {
                     let mod = scorePosition % card.players.count
                     if scorePosition - mod == hand.number * card.players.count {
-                        Color.gray.opacity(0.25)
+                        Color.secondary.opacity(0.25)
                     }
                 }
             }
@@ -365,13 +382,13 @@ private struct HandRow: View {
                 }
                 .background {
                     if isAlternateRow {
-                        Color.gray.opacity(0.035)
+                        Color.secondary.opacity(0.035)
                     }
 
                     if let scorePosition = scorePosition.wrappedValue {
                         let mod = scorePosition % card.players.count
                         if mod == index || scorePosition - mod == hand.number * card.players.count {
-                            Color.gray.opacity(0.25)
+                            Color.secondary.opacity(0.25)
                         }
                     }
                 }
@@ -420,7 +437,7 @@ private struct ResultsRow: View {
                     if let scorePosition {
                         let mod = scorePosition % card.players.count
                         if mod == index {
-                            Color.gray.opacity(0.2)
+                            Color.secondary.opacity(0.2)
                         }
                     }
 
@@ -530,55 +547,61 @@ private struct RoundByRoundView: View {
     }
 
     private func playerList(for hand: Card.Hand) -> some View {
-        ScrollView {
-            LazyVStack(spacing: 0) {
-                ForEach(card.players.enumerated(), id: \.element.id) { index, player in
-                    HStack(spacing: 12) {
-                        PlayerImage(player: player)
-                            .frame(width: 36, height: 36)
-
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(player.name)
-                                .fontWeight(.medium)
-
-                            Text("Total: \(card.getTotal(through: hand.number, for: player))")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-
-                        Spacer()
-
+        GeometryReader { proxy in
+            ScrollView {
+                LazyVStack(spacing: 0) {
+                    ForEach(card.players.enumerated(), id: \.element.id) { index, player in
                         HStack(spacing: 12) {
-                            StepperButton(systemImage: "minus.circle.fill", tint: .secondary) {
-                                let score = hand.scores[index]
-                                score.value = (score.value ?? 0) - 1
+                            PlayerImage(player: player)
+                                .frame(width: 36, height: 36)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(player.name)
+                                    .fontWeight(.medium)
+
+                                Text("Total: \(card.getTotal(through: hand.number, for: player))")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                             }
 
-                            TextField("0", value: scoreBinding(hand: hand, index: index), format: .number)
-                                .keyboardType(.numberPad)
-                                .multilineTextAlignment(.center)
-                                .font(.title3.bold())
-                                .monospacedDigit()
-                                .frame(width: 44)
-                                .focused($focusedPlayerIndex, equals: index)
+                            Spacer()
 
-                            StepperButton(systemImage: "plus.circle.fill", tint: .accentColor) {
-                                let score = hand.scores[index]
-                                score.value = (score.value ?? 0) + 1
+                            HStack(spacing: 12) {
+                                StepperButton(systemImage: "minus.circle.fill", tint: .secondary) {
+                                    let score = hand.scores[index]
+                                    score.value = (score.value ?? 0) - 1
+                                }
+
+                                TextField("0", value: scoreBinding(hand: hand, index: index), format: .number)
+                                    .keyboardType(.numberPad)
+                                    .multilineTextAlignment(.center)
+                                    .font(.title3.bold())
+                                    .monospacedDigit()
+                                    .frame(width: 44)
+                                    .focused($focusedPlayerIndex, equals: index)
+
+                                StepperButton(systemImage: "plus.circle.fill", tint: .accentColor) {
+                                    let score = hand.scores[index]
+                                    score.value = (score.value ?? 0) + 1
+                                }
                             }
                         }
-                    }
-                    .padding(.vertical, 8)
-                    .padding(.horizontal)
+                        .padding(.vertical, 10)
+                        .padding(.horizontal)
 
-                    if player.id != card.players.last?.id {
-                        Divider()
-                            .padding(.leading, 60)
+                        if player.id != card.players.last?.id {
+                            Divider()
+                                .padding(.leading, 60)
+                        }
                     }
                 }
+                .scoreCardStyle(borderOpacity: 0.15, shadowOpacity: 0.06, shadowRadius: 8, shadowY: 3)
+                .padding(.horizontal)
+                .padding(.vertical, 12)
+                .frame(minHeight: max(proxy.size.height - topInset, 0), alignment: .center)
             }
+            .safeAreaPadding(.top, topInset)
         }
-        .safeAreaPadding(.top, topInset)
     }
 
     private func scoreBinding(hand: Card.Hand, index: Int) -> Binding<Int?> {
